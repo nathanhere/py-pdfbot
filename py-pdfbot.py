@@ -9,7 +9,7 @@ import subprocess
 #TODO: Make classes
 #TODO: Create directories for output and tmp if none exist
 
-newline = '\n' # \r\n for Windows compatible csv. \n is for Linux
+newline = '\n'  # \r\n for Windows compatible csv. \n is for Linux
 
 txtDir = 'tmp/'
 csvPath = 'output/profiles.csv'
@@ -18,9 +18,10 @@ countryPath = 'ref/allcountries.csv'
 
 profiles = []
 
+
 # This loop is used for individual pdf profiles.
-def convert_pdf_to_txt(sourcePathf, destDir):
-	pdfList = os.listdir(pdfDir) 
+def convert_pdf_to_txt(sourcePath, destDir):
+	pdfList = os.listdir(pdfDir)
 	for pdf in pdfList:
 		filetxt = pdf[:len(pdf) - 4] + '.txt'
 		subprocess.call(["pdftotext", sourcePath + pdf, destDir + filetxt])
@@ -31,27 +32,28 @@ def convert_pdf_to_txt(sourcePathf, destDir):
 
 
 def loadcountries(filename):
-	with open(filename,'r') as f:
+	with open(filename, 'r') as f:
 		c = f.read()
 	return c.split(',')
 
 
-def writeCSVfile(filename = None, newFile = False, *args):
+def writeCSVfile(filename=None, newFile=False, *args):
 	if newFile:
 		mode = 'w'
 	else:
 		mode = 'a'
 	try:
 		with open(filename, mode) as f:
-			f.write(';'.join(args) + newline) # \r\n is for Windows. \n is for Linux
+			f.write(';'.join(args) + newline)  # \r\n is for Windows. \n is for Linux
 	except:
 		print 'filename or argument error'
 	return
 
+
 def get_location(s):
 	currentPos = -1
 	x = 0
-	while x < 2: # (Location info is located on line 2 of PDF linkedin resumes)
+	while x < 2:  # (Location info is located on line 2 of PDF linkedin resumes)
 		endPos = s.find(newline, currentPos + 1)
 		startPos = currentPos + 1
 		currentPos = endPos
@@ -104,7 +106,7 @@ def get_name(s):
 		# test for 'van'-type last names
 		if fullnameList[1].islower():
 			fullnameList[len(fullnameList) - 1] = fullnameList[1] + ' ' + fullnameList[len(fullnameList) - 1]
-		
+
 		lastname = fullnameList[len(fullnameList) - 1]
 		fullnameList.pop(len(fullnameList) - 1)
 		fullnameList.pop(0)
@@ -120,7 +122,7 @@ def get_title(s):
 	currentPos = -1
 	x = 0
 	# use location line as a positional reference to grab the title underneath of it
-	while x < 2: # (Location info is located on line 2 of PDF linkedin resumes)
+	while x < 2:  # (Location info is located on line 2 of PDF linkedin resumes)
 		endPos = s.find(newline, currentPos + 1)
 		startPos = currentPos + 1
 		currentPos = endPos
@@ -148,6 +150,7 @@ def load_profiles_to_dict(destDir):
 			x += 1
 	else:
 		print 'No txt files were found in the directory "{0}"'.format(destDir)
+
 
 def write_profiles(profPath):
 # Takes a profile path (string) as input and appends the csv file located there with data from the profiles list/dicts
@@ -189,5 +192,3 @@ load_profiles_to_dict(txtDir)
 write_profiles(csvPath)
 
 print 'All data has been written to a csv file located in "{0}"'.format(csvPath)
-
-
